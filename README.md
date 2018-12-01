@@ -3,6 +3,10 @@
 Adevent of Code 2018
 
 
+## Completed
+
+- [https://adventofcode.com/2018/day/1](https://adventofcode.com/2018/day/1)
+
 ## License
 
 Copyright © 2018 Brad Lucas
