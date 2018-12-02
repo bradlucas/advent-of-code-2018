@@ -27,7 +27,9 @@
         acc
         (recur (rest data) (add-sub (first data) acc))))))
 
-;; Part 1 Answer 341
+(comment
+  (run-part1)   ;; 427
+)
 
 (def test-input
   ["+1" "-2" "+3" "+1" "+1" "-2" "+10"])
@@ -47,5 +49,7 @@
               next-val
             (recur (rest data) (conj seen next-val) next-val)))))))
 
-;; Part 2 Answer 341
+(comment
+  (run-part2)  ;; 341
+  )
 
