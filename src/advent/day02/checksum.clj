@@ -25,7 +25,7 @@
 (defn process [acc s]
   (update-three-cnt (update-two-cnt acc s) s))
 
-(defn run-part1 []
+(defn part1 []
   (loop [data (read-input)
          acc {:two 0 :three 0}]
     (if (empty? data)
@@ -34,7 +34,54 @@
       (recur (next data) (process acc (process-string-to-set (first data)))))))
 
 (comment
-  (run-part1)    ;; 5750
+  (part1)    ;; 5750
 )
 
 
+;; find boxew which differ by exactly one character at the same position
+
+;; sort
+;; (sort read-input)
+
+(defn differ-by-one-char
+  "Return true if a and b differ by one char in the same position
+  For example, abc adc"
+  [a b]
+  (let [len (count a)
+        num-matches (count (filter identity (map = a b)))]
+    ;; number of matches positions should be one less then than the number of positions
+    (= (- len 1) num-matches)))
+
+
+(defn common-chars
+  "Return the chars that positionally match"
+  [a b]
+  (apply str (map (fn [a b] (if (= a b) a nil)) a b)))
+
+(def test-input
+["abcde"
+"fghij"
+"klmno"
+"pqrst"
+"fguij"
+"axcye"
+"wvxyz"]
+)
+
+(defn part2 []
+  (loop [l (sort (read-input))]
+    (let [a (first l)
+          b (second l)]
+      (if (differ-by-one-char a b)
+        (do
+          (println a b)
+          (common-chars a b))
+        (recur (next l))))))
+
+
+;; return the common letters between the two box ids
+
+
+(comment
+  (part2)   ;; "tzyvunogzariwkpcbdewmjhxi"
+)
