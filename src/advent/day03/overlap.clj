@@ -81,3 +81,63 @@
   )
 
 
+
+;; For each claim
+;; Get all the positions that it contains
+;; Check on the fabric if all the positions have only one id
+;; If so return that Id
+
+(defn only-id [fabric id positions]
+  ;; true only if each positon contains only [id]
+  (every? #(= [id] %) (map #(get fabric %) positions)))
+
+(defn find-no-overlaps [fabric claims]
+  (loop [claims claims]
+    (if (empty? claims)
+      (println "Error: Not found")
+      (let [{:keys [id row col height width]} (first claims)
+            row-range (range row (+ row height))
+            col-range (range col (+ col width))
+            positions (build-cells row-range col-range)]
+        (if (only-id fabric id positions)
+          id
+          (recur (next claims)))))))
+
+(defn add-map [a row col v]
+  ;; (println (str "add-map " row " " col))
+  (let [key [row col]]
+    (if (nil? (get a key))
+      (assoc a key [v])
+      (let [current-list (get a key)]
+        (assoc a key (conj (conj current-list v)))))))
+
+(defn load-fabric [a claim]
+  (let [{:keys [id row col height width]} claim
+        row-range (range row (+ row height))
+        col-range (range col (+ col width))]
+    ;; (println id row col height width)
+    ;; (println row-range)
+    ;; (println col-range)
+    (loop [fabric a
+           positions (build-cells row-range col-range)]
+      ;; (println a)
+      ;; (println positions)
+      (if (empty? positions)
+        fabric
+        (let [[row col] (first positions)]
+          (recur (add-map fabric row col id) (rest positions)))))))
+
+(defn part2 []
+  (loop [fabric {}
+        claims (map process-line (read-input))]
+    (if (empty? claims)
+      ;; (find-single-ids fabric)
+      (find-no-overlaps fabric (map process-line (read-input)))
+      (recur (load-fabric fabric (first claims)) (rest claims)))))
+
+
+
+
+(comment
+  (part2)    ;; 560
+)
