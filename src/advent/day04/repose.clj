@@ -151,6 +151,19 @@
       (* id hour))))
 
 
+;; Find the guard who has slept the most minutes. Then find the minute where the guard 
+;; was asleep the most. Multiple the id by the minute to get the answer
+
+;; Id = 421
+;; Minute = 27
+
 (comment
   (part1)   ;; 11367
 )
+
+
+
+
+;; ----------------------------------------------------------------------------------------------------
+;; part2
+
