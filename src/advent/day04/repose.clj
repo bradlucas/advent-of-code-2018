@@ -167,3 +167,69 @@
 ;; ----------------------------------------------------------------------------------------------------
 ;; part2
 
+;; Of all the guards which is most frequently asleep on the same minute
+;; For each of the minutes, who has the most instances of a particular minute
+
+
+(defn merge-sleep [h d]
+  (let [id (:id d)
+        sleep (:sleep d)]
+    (assoc h id (flatten (conj sleep (get h id))))))
+
+
+(defn get-all-sleep [data]
+  ;; build a map keyed by id with :sleep containing all of the guards sleep
+  ;; essentially merge the previous map by id and sleep
+  
+  (loop [d data
+         acc {}]
+    (if (empty? d)
+      acc
+      (recur (next d) (merge-sleep acc (first d)))
+      )
+    )
+)
+
+
+;;  [1153 [32 17]]
+(defn get-maxes [sleep-data]
+  (map (fn [[k v]]
+         [k
+          (apply max-key val (frequencies v))
+          ] 
+         )
+       sleep-data
+       )
+)
+
+
+;; [ID [min cnt]
+(defn max-val [v n]
+  (if (> (second (second v)) (second (second n)))
+    v
+    n))
+
+(defn find-max [l]
+  ;; [ID [min count]   ;; find max count
+  (loop [l l
+         v [0 [0 0]]]
+    (if (empty? l)
+      v
+      (recur (next l) (max-val v (first l))))))
+
+(defn part2 []
+  (let [data (sort-data (read-input))
+        partitioned-data (partition-by-guard-data data)
+        processed-data (process partitioned-data)]
+    (let [[id [m c]] (find-max (get-maxes (get-all-sleep processed-data)))]
+      (* id m))))
+
+
+;; id 1153
+;; min == 32
+;; (* 1153 32)  ;; 36896
+
+
+(comment
+  (part2)    ;; 36896
+)
