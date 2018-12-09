@@ -66,3 +66,63 @@
 )
 
 
+
+;; Part 2
+
+;; (-> (test-input) build-tree peek)
+
+;;
+;; "2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2"
+;;
+;; A (2 3)
+;;   B (0 3)
+;;     [10 11 12]
+;;   C (1 1)
+;;     D (0 1)
+;;       [99]
+;;     [2]
+;;   [1 1 2]
+;;
+
+;; {:meta (1 1 2), :children [{:meta (10 11 12), :children []} {:meta (2), :children [{:meta (99), :children []}]}]}
+
+;; If no children then the node's value is the sum of it's metadata
+;; If has children then the metadata entries are indexes to the child nodes if presnt
+
+;; A -> [1 1 2] -> [1 2] => means value of B, B and C
+
+;; B has no children so sum of [10 11 12] => 33
+
+;; C has children so metadata [2] refers to the second node which doesn't exist => 0
+
+;; So, A's [1 1 2] -> [33 33 0] == 66
+
+(defn walk [tree]
+  ;; (println tree)
+  (if (map? tree)
+    (let [{:keys [meta children]} tree]
+      ;; has children
+      (if (seq children)
+        ;; children is a list, index into it and get the value of each child
+        (assoc tree :value (reduce (fn [sum idx]
+                                     (let [child (get children idx)]
+                                       (+ sum (get child :value 0))))
+                                   0
+                                   (map dec meta)))
+        ;; else, just add the meta values
+        (assoc tree :value (reduce + meta))))
+    tree)
+  )
+
+;; (def tree (-> (read-input) build-tree peek))
+;; (def tree (-> (test-input) build-tree peek))
+
+
+(defn part2 []
+  (let [tree (-> (read-input) build-tree peek)]
+    (:value (clojure.walk/postwalk walk tree))))
+
+
+(comment
+  (part2)   ;; 24262
+)
