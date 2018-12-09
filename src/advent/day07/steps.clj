@@ -62,4 +62,81 @@
 )
 
 
+;; ----------------------------------------------------------------------------------------------------
+;; Part 2
 
+;; Each step is 60 seconds plus an amount corresponding to its letter: A=1, ... Z=26
+;;
+;; 5 works with 60 secon step durations. How long to complete all the steps
+
+
+(defn initialize [deps-map steps step-time num-workers]
+  {:seconds -1
+   :workers []
+   :done []
+   :queue (set (concat
+                (map first steps)
+                (map second steps)))
+   :deps-map deps-map
+   :step-time step-time
+   :num-workers num-workers
+   })
+
+(defn work [{:keys [workers] :as system}]
+  (-> system
+      (update :seconds inc)
+      (update :workers (fn [workers]
+                         (map #(update % 1 dec) workers)))))
+
+(defn job-time [job step-time]
+  ;; job is "C"
+  (let [letter (.charAt job 0)]
+    ;; Character/getNumericValue("A") returns 10 to subtract 9
+    (+ step-time (- (Character/getNumericValue letter) 9))))
+
+(defn next-job [{:keys [deps-map queue done]}]
+  (->> queue
+       (filter #(zero? (count (clojure.set/difference (set (get deps-map %))
+                                                      (set done)))))
+       (sort-by first)                  ;keep the next job algorithm as above
+       first))
+
+(defn schedule [{:keys [workers queue step-time num-workers] :as system}]
+  (if (or (<= num-workers (count workers))
+          (empty? queue))
+    system
+    (if-let [job (next-job system)]
+      (recur (-> system
+                 (update :workers conj [job (job-time job step-time)])
+                 (update :queue disj job)))
+      system)))
+
+(defn update-completed-jobs [{:keys [workers] :as system}]
+  (let [done-workers (group-by #(zero? (second %)) workers)]
+    (-> system
+        (update :done into (map first (get done-workers true)))
+        (assoc :workers (get done-workers false)))))
+
+(defn tick [{:keys [workers queue] :as system}]
+  (if (and (empty? workers)
+           (empty? queue))
+    system
+    (-> system
+        (update-completed-jobs)
+        (schedule)
+        (work))))
+
+(defn forever [v]
+  (cons v (lazy-seq (forever (tick v)))))
+
+(defn part2 []
+  (let [edges (build-edges (read-input))
+        dependencies (build-dependencies edges)
+        node (build-nodes edges)
+        step-time 60
+        num-workers 5]
+    (:seconds (nth (rest (forever (initialize dependencies edges step-time num-workers))) 1500))))
+
+(comment
+  (part2)  ;; 864
+)
