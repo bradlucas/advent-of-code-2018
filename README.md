@@ -1,6 +1,6 @@
 # Advent of Code in Clojure 2018
 
-[Adevent of Code 2018](https://adventofcode.com/)
+[Adevent of Code 2018](https://adventofcode.com/) in Clojure.
 
 
 ## Completed
