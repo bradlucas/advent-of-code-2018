@@ -16,6 +16,7 @@
 - [https://adventofcode.com/2018/day/9](https://adventofcode.com/2018/day/9)
 - [https://adventofcode.com/2018/day/10](https://adventofcode.com/2018/day/10)
 - [https://adventofcode.com/2018/day/11](https://adventofcode.com/2018/day/11)
+- [https://adventofcode.com/2018/day/12](https://adventofcode.com/2018/day/12)
 
 ## License
 
