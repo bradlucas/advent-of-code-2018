@@ -41,7 +41,9 @@
   Prepend three blanks -1 and -2 so you can match a rule for the first post at 0.
   " 
   [initial]
-  (let [initial (apply str (concat "....." initial "....................."))]
+  (let [initial (apply str (concat "....." initial "..........................."))
+        ;; initial (apply str (concat "....." initial "....................."))
+        ]
     (build-array initial)))
 
 (defn display-state
@@ -103,12 +105,25 @@
   (let [new-state (vec (take (count state) (repeat 0)))]
     (reduce #(assoc %1 %2 1) new-state idxs)))
 
+(defn right-pad-state [state]
+  ;; ensure there is at least .. after the last plant
+  (let [len (count state)
+        last-index (.lastIndexOf state 1)]
+    ;; (println len last-index)
+    (if (>= last-index (- len 5))
+      (do
+        ;; (println "adding 0s")
+        (vec (concat state [0 0])))
+      state
+      )
+    ))
+
 (defn apply-rules [state rules]
   ;; apply rules to state and return
   (loop [rules rules
          positions []]
     (if (empty? rules)
-      (build-new-state state (vec (sort (flatten positions))))
+      (right-pad-state (build-new-state state (vec (sort (flatten positions)))))
       (recur (next rules) (conj positions (remove nil? (apply-rule state (first rules))))))))
 
 (defn sum
@@ -155,3 +170,33 @@ Add the positional values where 1 is placed"
 (def s (:state input-data))
 (def rules (:rules input-data))
 (def r (first rules))
+
+
+;; ----------------------------------------------------------------------------------------------------
+;; Part 2
+
+
+;; Parts increases at a fixed amount starting at 162
+;; 162 ...............................................................................................#.......#...........#.......#.......#.....#......#......#.......#......#.....#.......#.......#..............#.......#.....#.....#......#.....#......#......#.......#.....#.....
+;; 163 ................................................................................................#.......#...........#.......#.......#.....#......#......#.......#......#.....#.......#.......#..............#.......#.....#.....#......#.....#......#......#.......#.....#......
+
+
+;; Value till 162
+;; Diff from 162 to 163 
+
+;; advent.day12.plants> (sum (process read-input 162))
+;; 4084
+;; advent.day12.plants> (sum (process read-input 163))
+;; 4107
+;; advent.day12.plants> 
+
+;; diff is 23
+
+(defn part2 []
+  (+ (* 23 (- 50000000000 162))
+     (sum (process read-input 162))))
+
+
+(comment
+  (part2)    ;; 1150000000358
+)
