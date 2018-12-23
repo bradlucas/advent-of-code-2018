@@ -1,0 +1,44 @@
+;; 1.
+;; Start
+(3)[7]
+
+;; Add current recipes and append digits
+
+;; Move 1 + curent recipe
+;; Elf 1 -> 1 + 3 == 4
+;; Elf 2 -> 1 + 7 = 8
+
+
+;; 2.
+(3)[7] 1  0 
+
+
+;; Add current recipes and append digits
+
+3 7 1 0 1 0
+
+;; Move 1 + curent recipe
+;; Elf 1 -> 1 + 3 == 4
+;; Elf 2 -> 1 + 7 = 8
+
+;; 3.
+3 7 1 [0] (1) 0
+
+
+;; Add current recipes and append digits
+;; Append 1
+;; Move 1 + curent recipe
+;; Elf 1 -> 0 + 1 == 1
+;; Elf 2 -> 1 + 2 = 2
+
+3 7 1 0 [1] 0 (1)
+
+
+
+;; 9 recipes created (num of recipes)
+ 3  7  1  0 (1) 0  1  2 [4]
+
+;; 10 recipes after (10 more added)
+ 3  7 [1] 0  1  0 (1) 2  4  5  1  5  8  9  1  6  7  7  9 
+
+
