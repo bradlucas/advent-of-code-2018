@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]))
 
 
-;; The following was used and an example to learn how to solve this puzzle
+;; See the following link to a repo which was used to help solve this puzzle
 ;; https://github.com/baritonehands/advent-of-code-2018/blob/master/src/aoc/dec14.clj
 
 
@@ -54,5 +54,42 @@
 
 
 (comment
-  (part1)     ;; 9315164154
+  (time (part1))
+  ;; "Elapsed time: 746.764866 msecs"
+  ;; 9315164154
+)
+
+
+;; ----------------------------------------------------------------------------------------------------
+;; Part 2
+
+;; See the following link to a repo which was used to help solve this puzzle
+;; https://github.com/Average-user/adventofcode-clj-2018/blob/master/src/adventofcode_clj_2018/day14.clj
+
+
+(defn solve [input]
+  (loop [e1 0
+         e2 1
+         rs [3 7]]
+    (let [e1-move (inc (nth rs e1))
+          e2-move (inc (nth rs e2))
+          sum    (+ (nth rs e1) (nth rs e2))
+
+          rs'    (if (<= 10 sum)
+                   (into rs [(quot sum 10) (rem sum 10)])
+                   (conj rs sum))
+          rsc    (count rs')
+          cond1  (and (<= 6 rsc) (= input (subvec rs' (- rsc 6))))
+          cond2  (and (<= 7 rsc) (= input (subvec rs' (- rsc 7) (+ 6 (- rsc 7)))))]
+      (cond cond1 (subvec rs' 0 (- rsc 6))
+            cond2 (subvec rs' 0 (- rsc 7))
+            :else (recur (rem (+ e1 e1-move) rsc) (rem (+ e2 e2-move) rsc) rs')))))
+
+(defn part2 []
+  (count (solve (string-digits (str input)))))
+
+(comment
+  (time (part-2))  
+  ;; "Elapsed time: 17192.560481 msecs"
+  ;; 20231866
 )
