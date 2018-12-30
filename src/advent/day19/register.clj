@@ -115,3 +115,27 @@
 (comment
   (part1)      ;; 1848
 )
+
+
+;; ----------------------------------------------------------------------------------------------------
+;; Part 2
+
+;; Doesn't return (or is very long running)
+;; (defn part2 []
+;;   (let [[ipr instructions] (load-input)]
+;;     (first (run ipr instructions [1 0 0 0 0 0]))))
+
+
+;; @from https://github.com/Average-user/adventofcode-clj-2018/blob/master/src/adventofcode_clj_2018/day19.clj
+;;
+(defn divisors [n]
+  (filter #(zero? (rem n %)) (range 1 (inc n))))
+
+(defn part2 []
+  (let [[a b] (mapv #(get (get (second (load-input)) %) 2) [21 23])]
+    (reduce + (divisors (+ 10551236 (* a 22) b)))))
+
+
+(comment
+  (part2)      ;; 22157688
+)
