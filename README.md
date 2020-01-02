@@ -1,6 +1,6 @@
 # Advent of Code 2018
 
-[Advent of Code 2018](https://adventofcode.com/) in Clojure.
+[Advent of Code 2018](https://adventofcode.com/2018) in Clojure.
 
 ## Completed Days
 
@@ -21,6 +21,7 @@
 - [Day16](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day16/chronal.clj)
 - [Day19](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day19/register.clj)
 - [Day20](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day20/rooms.clj)
+- [Day21](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day21/conversion.clj)
 
 
 
