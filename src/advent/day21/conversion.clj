@@ -91,26 +91,26 @@
 ;; @from https://github.com/Average-user/adventofcode-clj-2018/blob/master/src/adventofcode_clj_2018/day19.clj
 ;;
 (defn run [ip-register intructions registers]
-    (loop [registers registers
-           ip 0]
-      (let [i   (get intructions ip)                         ;; next instruction pointer (index)
-            registers' (assoc registers ip-register ip)]     ;; load ip
-        ;; if next instruction exists
-        (if i
-          ;; run instruction
-          (let [op (first i)
-                registers'' (apply-opcode registers' op i)]
-
-            ;; @see https://www.reddit.com/r/adventofcode/comments/a86jgt/2018_day_21_solutions/
-            ;; return the first value of r5 when at intruction pointer 28
-            (if (= ip 28)
-              (do
-                (pp/pprint (format "%s %s - %s : %s - %s" ip (nth registers' 5) (nth registers'' 5) registers' registers''))
-                (nth registers'' 5))
-              (recur registers'' (inc (get registers'' ip-register)))
-              ))
-          ;; else return final state
-          registers))))
+  (loop [registers registers
+         ip 0]
+    (let [i   (get intructions ip)                         ;; next instruction pointer (index)
+          registers' (assoc registers ip-register ip)]     ;; load ip
+      ;; if next instruction exists
+      (if i
+        ;; run instruction
+        (let [op (first i)
+              registers'' (apply-opcode registers' op i)]
+          
+          ;; @see https://www.reddit.com/r/adventofcode/comments/a86jgt/2018_day_21_solutions/
+          ;; return the first value of r5 when at intruction pointer 28
+          (if (= ip 28)
+            (do
+              (pp/pprint (format "%s %s - %s : %s - %s" ip (nth registers' 5) (nth registers'' 5) registers' registers''))
+              (nth registers'' 5))
+            (recur registers'' (inc (get registers'' ip-register)))
+            ))
+        ;; else return final state
+        registers))))
 
 
 ;; ;; ----------------------------------------------------------------------------------------------------
@@ -128,3 +128,71 @@
   ;; => 2884703
 )
 
+
+
+;; ----------------------------------------------------------------------------------------------------
+;; Part 2
+
+(def r5-values (atom #{}))
+(def r5-last-value (atom 0))
+
+(defn save-r5 [r5]
+  (reset! r5-values (conj @r5-values r5))
+  (reset! r5-last-value r5))
+
+(defn run2 [ip-register intructions registers]
+  (loop [registers registers
+         ip 0]
+    (let [i   (get intructions ip)                         ;; next instruction pointer (index)
+          registers' (assoc registers ip-register ip)]     ;; load ip
+        (let [op (first i)
+              registers'' (apply-opcode registers' op i)]
+          (let [found (if (= ip 28)
+                        ;; look for the first number to repeat in r5 at instruction pointer 28
+                        ;; and return the previous r5 value (the last unique r5 value)
+                        (let [r5 (nth registers'' 5)]
+                          (if (get @r5-values r5)
+                            (do
+                              (pp/pprint (format "Repeat found. Last value %s" @r5-last-value))
+                              true)
+                            (do
+                              (pp/pprint (format "%s - %s" (count @r5-values) r5))
+                              (save-r5 r5)
+                              false))))]
+            (if found
+              @r5-last-value
+              (recur registers'' (inc (get registers'' ip-register))))
+            )))))
+
+
+(defn part2 []
+  (let [[ipr instructions] (load-input)]
+    (reset! r5-values #{})
+    (reset! r5-last-value 0)
+    (run2 ipr instructions [0 0 0 0 0 0])))
+
+
+
+
+(defn run-part2 []
+  (pp/pprint "Running Day21 Part 2")
+  (pp/pprint (part2))
+  (pp/pprint "Done")
+)
+
+(comment
+  ;; "Running Day21 Part 2"
+  ;; "Repeat found. Last value 15400966"
+  ;; 15400966
+  ;; "Done"
+  
+  ;; real	22m14.912s
+  ;; user	22m13.437s
+  ;; sys	0m16.763s
+)
+
+
+(comment
+  (part2)
+  ;; => 15400966
+)
