@@ -51,3 +51,64 @@
   ;; => 573
   )
 
+
+;; ----------------------------------------------------------------------------------------------------
+;; Part 2
+
+
+;; @see https://github.com/thegeez/clj-advent-of-code-2018/blob/master/src/advent2018/core3.clj
+;; and
+;; h/t https://www.reddit.com/r/adventofcode/comments/a8s17l/2018_day_23_solutions/ecdqzdg/
+
+(defn load-bots [in]
+  (into {}
+        (map-indexed (fn [id line]
+                       (let [[_ x y z r] (re-find #"pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(\d+)" line)
+                             [x y z r] (map #(Long/parseLong %) [x y z r])]
+                         [id [x y z r]])))
+        (str/split-lines (slurp (if (string? in) (java.io.StringReader. in) in)))
+        ))
+
+(defn build-queue [bots]
+  ;; For each bot, the code calculates d = manhattan distance to origin and adds (MAX(d-r,0), 1) and (d+r, -1) to a priority queue.
+  (into (sorted-map) ;; store dups by adding id to key
+        (mapcat (fn [[id [x y z r]]]
+                  (let [d (+ (Math/abs ^long x)
+                             (Math/abs ^long y)
+                             (Math/abs ^long z))]
+                    
+                    [[[(max 0 (- d r)) id] 1]
+                     [[(+ d r) id] -1]])))
+        bots))
+
+(defn part2 [in]
+  (let [bots (load-bots in)
+        q (build-queue bots)
+
+        res (->> (reductions
+                  (fn [[c _dist] [[dist id] e]]
+                    [(+ c e) dist])
+                  [0 nil]
+                  q)
+                 rest
+                 (apply max-key first)
+                 second)]
+    res))
+
+
+
+
+(comment
+  
+  (part2 "pos=<10,12,12>, r=2
+pos=<12,14,12>, r=2
+pos=<16,12,12>, r=4
+pos=<14,14,14>, r=6
+pos=<50,50,50>, r=200
+pos=<10,10,10>, r=5" )
+  ;; 12,12,12 -> 36
+
+  (part2 (io/resource "day23/input.txt"))
+  ;; => 107279292
+
+  )
