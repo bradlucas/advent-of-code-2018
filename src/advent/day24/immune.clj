@@ -212,3 +212,66 @@
   )
 
 
+;; ----------------------------------------------------------------------------------------------------
+;; Part2
+
+;; ----------------------------------------------------------------------------------------------------
+;; The following routines are slight modifications of routines at:
+;; https://github.com/armstnp/advent-of-code-2018/blob/master/clojure/src/advent_of_code_2018/day24.clj
+;; ----------------------------------------------------------------------------------------------------
+
+(defn winner [groups]
+  (when (battle-over? groups)
+    (-> groups
+        vals
+        first
+        :army)))
+
+(defn boost-immune [boost groups]
+  (reduce-kv (fn [m k v]
+               (assoc m k
+                      (if (= :immune (:army v))
+                        (update v :attack-damage #(+ ^int % ^int boost))
+                        v)))
+             {}
+             groups))
+
+(defn boosted-fight-outcome [boost groups]
+  (let [battle-end (->> groups
+                        (boost-immune boost)
+                        (iterate fight)
+                        (partition 2 1)
+                        (filter #(or (winner (second %)) (apply = %)))
+                        first)]
+    (if (apply = battle-end)
+      [:stalemate nil]
+      ((juxt winner hit-points-remaining) (second battle-end)))))
+
+(defn seek-winning-outcome
+  ([groups]
+   (seek-winning-outcome groups 1))
+
+  ([groups lower-bound]
+   (let [boost (* 2 lower-bound)
+         [winner hit-points-remaining] (boosted-fight-outcome boost groups)]
+     (if (= winner :immune)
+       (seek-winning-outcome groups lower-bound boost)
+       (recur groups boost))))
+
+  ([groups lower-bound upper-bound]
+   (if (= (inc lower-bound) upper-bound)
+     (second (boosted-fight-outcome upper-bound groups))
+     (let [boost (+ lower-bound (quot (- upper-bound lower-bound) 2))
+           [winner hit-points-remaining] (boosted-fight-outcome boost groups)]
+       (if (= winner :immune)
+         (recur groups lower-bound boost)
+         (recur groups boost upper-bound))))))
+
+
+(defn part2 []
+  (seek-winning-outcome (parse-armies (split-input (load-input)))))
+
+(comment
+  (part2)
+  ;; => 1045
+  )
