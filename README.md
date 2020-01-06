@@ -2,6 +2,13 @@
 
 [Advent of Code 2018](https://adventofcode.com/2018) in Clojure.
 
+
+---
+
+![advent final image](https://github.com/bradlucas/advent-of-code-2018/blob/master/resources/advent-final-image.png)
+
+---
+
 ## Completed Days
 
 - [Day01](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day01/calibration.clj)
