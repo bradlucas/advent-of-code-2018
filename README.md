@@ -22,6 +22,10 @@
 - [Day19](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day19/register.clj)
 - [Day20](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day20/rooms.clj)
 - [Day21](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day21/conversion.clj)
+- [Day22](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day22/modemaze.clj)
+- [Day23](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day23/nanobot.clj)
+- [Day24](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day24/immune.clj)
+- [Day25](https://github.com/bradlucas/advent-of-code-2018/blob/master/src/advent/day25/constellations.clj
 
 
 
